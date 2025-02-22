@@ -1,28 +1,13 @@
-# Базовый класс
-class Animal:
-    def __init__(self, name):
-        self.name = name
+from Functions.func_messages import *
 
-    def speak(self):
-        return f"{self.name} издает звук."
+def main():
+    names = ["Алексей", "Мария", "Дмитрий"]
+    for name in names:
+        greet(name)
 
-# Производный класс
-class Dog(Animal):
-    def __init__(self, name, breed):
-        super().__init__(name)  # Вызов конструктора базового класса
-        self.breed = breed
-
-    def speak(self):
-        return f"{self.name} лает. Порода: {self.breed}."
-
-# Производный класс
-class Cat(Animal):
-    def __init__(self, name, breed):
-        super().__init__(name)  # Вызов конструктора базового класса
-        self.breed = breed
-
-    def speak(self):
-        return f"{self.name} мяукает. Порода: {self.breed}."
+if __name__ == "__main__":
+    
+    
 
 # Пример использования
 animal = Animal("Животное")
@@ -32,3 +17,5 @@ cat = Cat("Чубайс", "Персидский")
 print(animal.speak())  # Животное издает звук.
 print(dog.speak())     # Рекс лает. Порода: Овчарка.
 print(cat.speak())     # Чубайс мяукает. Порода: Персидский.
+
+main()

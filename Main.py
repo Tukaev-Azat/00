@@ -1,4 +1,10 @@
-print('Репозитарий создан')
-lv_i_value = 125
-lv_i_value_rez = lv_i_value / 10
-print(lv_i_value)
+def greet(name):
+    print(f"Привет, {name}!")
+
+def main():
+    names = ["Алексей", "Мария", "Дмитрий"]
+    for name in names:
+        greet(name)
+
+if __name__ == "__main__":
+    main()    

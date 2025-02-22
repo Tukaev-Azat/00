@@ -1,4 +1,9 @@
-print('Репозитарий создан')
-lv_i_value = 125
-lv_i_value_rez = lv_i_value / 10
-print(lv_i_value)
+from Functions.func_messages import *
+
+def main():
+    names = ["Алексей", "Мария", "Дмитрий"]
+    for name in names:
+        greet(name)
+
+if __name__ == "__main__":
+    main()

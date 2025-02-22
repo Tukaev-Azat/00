@@ -1,2 +1,2 @@
 def greet(name):
-    print(f"Привет, {name}!")
+    print(f"Привет, дорогой {name}!")

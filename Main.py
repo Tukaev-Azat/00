@@ -1,46 +1,31 @@
-from Functions.func_messages import *
+import pandas as pd
+import json
+import tkinter as tk
+from tkinter import filedialog
 
-def main():
-    names = ["Алексей", "Мария", "Дмитрий"]
-    for name in names:
-        greet(name)
+# Функция для выбора файла и преобразования данных
+def convert_excel_to_json():
+    # Создаем окно для выбора файла
+    root = tk.Tk()
+    root.withdraw()  # Скрываем главное окно
 
-# Базовый класс
-class Animal:
-    def __init__(self, name):
-        self.name = name
+    file_path = filedialog.askopenfilename(
+        title="Выберите файл Excel",
+        filetypes=(("Excel Files", "*.xls;*.xlsx"), ("All Files", "*.*"))
+    )
 
-    def speak(self):
-        return f"{self.name} издает звук."
+    if file_path:
+        # Читаем данные из Excel файла
+        df = pd.read_excel(file_path)
 
-# Производный класс
-class Dog(Animal):
-    def __init__(self, name, breed):
-        super().__init__(name)  # Вызов конструктора базового класса
-        self.breed = breed
+        # Конвертируем DataFrame в формат JSON
+        json_data = df.to_dict(orient='records')
+        json_output = json.dumps(json_data, ensure_ascii=False, indent=4)
 
-    def speak(self):
-        return f"{self.name} лает. Порода: {self.breed}."
+        # Выводим данные в терминал
+        print(json_output)
+    else:
+        print("Файл не выбран.")
 
-# Производный класс
-class Cat(Animal):
-    def __init__(self, name, breed):
-        super().__init__(name)  # Вызов конструктора базового класса
-        self.breed = breed
-
-    def speak(self):
-        return f"{self.name} мяукает. Порода: {self.breed}."
-
-
-if __name__ == "__main__":
-
-    # Пример использования
-    animal = Animal("Животное")
-    dog = Dog("Рекс", "Овчарка")
-    cat = Cat("Чубайс", "Персидский")
-
-    print(animal.speak())  # Животное издает звук.
-    print(dog.speak())     # Рекс лает. Порода: Овчарка.
-    print(cat.speak())     # Чубайс мяукает. Порода: Персидский.
-
-    main()
+# Запускаем функцию
+convert_excel_to_json()

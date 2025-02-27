@@ -1,31 +1,40 @@
-import pandas as pd
-import json
+import keyboard
+import time
+import threading
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import messagebox
+import pyperclip
 
-# Функция для выбора файла и преобразования данных
-def convert_excel_to_json():
-    # Создаем окно для выбора файла
-    root = tk.Tk()
-    root.withdraw()  # Скрываем главное окно
+def get_selected_text():
+    """Получает выделенный текст из активного окна."""
+    try:
+        # Копируем выделенный текст в буфер обмена
+        pyperclip.copy("")  # Очищаем буфер обмена
+        keyboard.press_and_release('ctrl+c')  # Копируем выделенный текст
+        time.sleep(0.05)  # Небольшая задержка, чтобы текст успел скопироваться
+        selected_text = pyperclip.paste()  # Получаем текст из буфера обмена
+        return selected_text
+    except pyperclip.PyperclipException:
+        return ""  # Возвращаем пустую строку, если pyperclip не работает
+    
+def show_message():
+    #root = tk.Tk()
+    #root.withdraw()  # Скрыть основное окно
+    
+    #messagebox.showinfo("Сообщение", "Привет, мир!")
+    messagebox.showinfo("Сообщение", get_selected_text())
+    #root.destroy()
 
-    file_path = filedialog.askopenfilename(
-        title="Выберите файл Excel",
-        filetypes=(("Excel Files", "*.xls;*.xlsx"), ("All Files", "*.*"))
-    )
+def on_ctrl_pressed():
+    global last_ctrl_press_time
+    current_time = time.time()
+    if current_time - last_ctrl_press_time < 0.5:  # Двойное нажатие в течение 0.5 секунд
+        show_message_thread = threading.Thread(target=show_message)
+        show_message_thread.start()
+    last_ctrl_press_time = current_time
 
-    if file_path:
-        # Читаем данные из Excel файла
-        df = pd.read_excel(file_path)
+last_ctrl_press_time = 0
 
-        # Конвертируем DataFrame в формат JSON
-        json_data = df.to_dict(orient='records')
-        json_output = json.dumps(json_data, ensure_ascii=False, indent=4)
+keyboard.on_press_key('ctrl', lambda e: on_ctrl_pressed())
 
-        # Выводим данные в терминал
-        print(json_output)
-    else:
-        print("Файл не выбран.")
-
-# Запускаем функцию
-convert_excel_to_json()
+keyboard.wait()  # Держите скрипт запущенным

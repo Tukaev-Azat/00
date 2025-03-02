@@ -1,4 +1,4 @@
-def replace_characters(input_str):
+def replace_characters2(input_str):
     replacements = {
         'q': 'й', 'w': 'ц', 'e': 'у', 
         'r': 'к', 't': 'е', 'y': 'н',
@@ -28,11 +28,6 @@ def replace_characters0(input_str):
     output_str = input_str.translate(translation_table)
     return output_str
 
-# Пример использования
-input_string = "Hello, World! qwerty"
-result = replace_characters(input_string)
-print(result)  # "Hello, World! йцукен"
-
 def replace_characters1(input_str):
     replacements = {
         'q': 'й',
@@ -44,7 +39,7 @@ def replace_characters1(input_str):
     return output_str
 
 
-def replace_characters2(input_str):
+def replace_characters(input_str):
     replacements = {
         'q': 'й',
         'w': 'ц',

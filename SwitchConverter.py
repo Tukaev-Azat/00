@@ -3,6 +3,8 @@ import time
 import keyboard
 import pyperclip
 
+from pynput import keyboard as kb
+
 import pystray
 from pystray import MenuItem as item
 from PIL import Image
@@ -24,6 +26,9 @@ def get_selected_text():
     # Вставляем символ из буфера обмена
     keyboard.press_and_release( 'ctrl+v' )
 
+    time.sleep(0.5)  # Небольшая пауза для завершения операции
+    keyboard.press_and_release( 'alt+shift' )
+    
 def upload_replacements():
     #загрузить перекодировочный файл
     with open('replacements.txt', 'r', encoding='utf-8') as f:
@@ -32,11 +37,6 @@ def upload_replacements():
             if line:
                 key, value = line[0], line[1]
                 replacements[key] = value
-                
-def keyboard_listener():
-    #запустить слушатель клавиатуры
-    keyboard.on_press_key("print screen", lambda _: get_selected_text())
-    keyboard.wait()
 
 def exit_action(icon, item):
     #закрытие программы
@@ -66,12 +66,32 @@ def create_tray_icon():
     icon = pystray.Icon("Название", image, "Заголовок", menu)
     icon.run()
 
+def on_press(key):
+    # Анализ нажатий клавиш
+    global ctrl_press_count, last_press_time
+    if key == kb.Key.ctrl_r:
+        current_time = time.time()
+        if ctrl_press_count == 0 or (current_time - last_press_time) <= 0.5:
+            ctrl_press_count += 1
+            last_press_time = current_time
+            if ctrl_press_count == 2:
+                #print("hello, world!")
+                get_selected_text()
+                ctrl_press_count = 0  # Сброс счётчика после вывода сообщения
+        else:
+            ctrl_press_count = 1
+            last_press_time = current_time
+
+def on_release(key):
+    pass  # Здесь можно добавить обработку отпускания клавиши, если нужно
 
 upload_replacements()
 
-# Запускаем прослушиватель клавиатуры в отдельном потоке
-keyboard_thread = threading.Thread(target=keyboard_listener)
-keyboard_thread.daemon = True
-keyboard_thread.start()
+# Инициализация счётчика нажатий и времени последнего нажатия
+ctrl_press_count = 0
+last_press_time = time.time()
 
-create_tray_icon()
+# Создание слушателя
+with kb.Listener(on_press=on_press, on_release=on_release) as listener:
+    #listener.join()
+    create_tray_icon()
